@@ -1,1 +1,4 @@
-# pschl_golangBase_hw
+# Purple school Основы Golang: Homeworks
+
+Алексей Сафаров  
+Email: safarov-ar@yandex.ru
