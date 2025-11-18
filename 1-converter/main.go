@@ -9,13 +9,16 @@ import (
 
 var currencies = []string{"USD", "EUR", "RUB"}
 
+const USD_EUR = 0.86
+const USD_RUB = 81.0132
+const EUR_RUB = USD_RUB / USD_EUR
+
 func main() {
-	const USD_EUR = 0.86
-	const USD_RUB = 81.0132
-	const EUR_RUB = USD_RUB / USD_EUR
 
 	fmt.Println("Конвертор валют.")
 	for {
+		var original, target string
+		var count float64
 		fmt.Print("Укажите исходную валюту (USD, EUR, RUB): ")
 		original, err := InputData()
 		if err != nil {
@@ -32,7 +35,7 @@ func main() {
 				fmt.Println(err)
 				continue
 			}
-			count, err := strconv.Atoi(countStr)
+			count, err = strconv.ParseFloat(countStr, 64)
 			if err != nil {
 				fmt.Println(err)
 				continue
@@ -44,7 +47,7 @@ func main() {
 		}
 		for {
 			fmt.Printf("Укажите целевую валюту (%v): ", getCurrencyForExchange(original))
-			target, err := InputData()
+			target, err = InputData()
 			if err != nil {
 				fmt.Println(err)
 				continue
@@ -54,27 +57,31 @@ func main() {
 			}
 			break
 		}
-		fmt.Println("OK")
+		CurrencyСalculation(count, original, target)
 		break
 	}
-	// for {
-	// 	menu()
-	//
-	// 	switch choice {
-	// 	case "1":
-	// 		if checkInputCurrency()
-	// 		menuStep2()
-	// 	case "2":
-	// 		return
-	// 	default:
-	// 		continue
-	// 	}
-
-	// }
 }
 
 func CurrencyСalculation(count float64, currOriginal string, currTarget string) {
-
+	var result float64
+	if currOriginal == "USD" {
+		if currTarget == "EUR" {
+			result = USD_EUR
+		} else {
+			result = USD_RUB
+		}
+	} else if currOriginal == "EUR" {
+		if currTarget == "USD" {
+			result = 1 / USD_EUR
+		} else {
+			result = EUR_RUB
+		}
+	} else if currTarget == "USD" {
+		result = 1 / USD_RUB
+	} else {
+		result = 1 / EUR_RUB
+	}
+	fmt.Printf("%.2f\n", result*count)
 }
 
 func InputData() (string, error) {
@@ -86,13 +93,6 @@ func InputData() (string, error) {
 	return input, nil
 }
 
-func menu() {
-
-	fmt.Println("Выберете вариант")
-
-	fmt.Println("2: Выход")
-}
-
 func checkInputCurrency(inputUser ...string) bool {
 	if len(inputUser) == 2 && inputUser[0] == inputUser[1] && slices.Contains(currencies, inputUser[1]) {
 		return false
@@ -100,17 +100,17 @@ func checkInputCurrency(inputUser ...string) bool {
 	return slices.Contains(currencies, inputUser[0])
 }
 
-func checkCount(count int) bool {
+func checkCount(count float64) bool {
 	return count > 0
 }
 
 func getCurrencyForExchange(original string) string {
-	indOriginal := slices.Index(currencies, original)
-	tempSlice := currencies[:indOriginal]
-	// if indOriginal == len(currencies)-1 {
-	// 	tempSlice = currencies[:indOriginal]
-	// } else {
-	tempSlice = append(tempSlice, currencies[indOriginal+1:]...)
-	// }
+	var tempSlice []string
+	for _, el := range currencies {
+		if el == original {
+			continue
+		}
+		tempSlice = append(tempSlice, el)
+	}
 	return fmt.Sprint(strings.Join(tempSlice, ", "))
 }
