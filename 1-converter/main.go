@@ -9,13 +9,14 @@ import (
 
 var currencies = []string{"USD", "EUR", "RUB"}
 
-var ratesByUSD = map[string]float64{
-	"USD": 1,
-	"EUR": 0.86,
-	"RUB": 81.0132,
-}
+type Rate map[string]float64
 
 func main() {
+	var ratesByUSD = Rate{
+		"USD": 1,
+		"EUR": 0.86,
+		"RUB": 81.0132,
+	}
 
 	fmt.Println("Конвертор валют.")
 	for {
@@ -59,13 +60,13 @@ func main() {
 			}
 			break
 		}
-		CurrencyСalculation(count, original, target)
+		CurrencyСalculation(count, original, target, &ratesByUSD)
 		break
 	}
 }
 
-func CurrencyСalculation(count float64, currOriginal string, currTarget string) {
-	result := calcRates(currOriginal, currTarget)
+func CurrencyСalculation(count float64, currOriginal string, currTarget string, rates *Rate) {
+	result := calcRates(currOriginal, currTarget, *rates)
 	fmt.Printf("%.2f\n", result*count)
 }
 
@@ -100,8 +101,8 @@ func getCurrencyForExchange(original string) string {
 	return fmt.Sprint(strings.Join(tempSlice, ", "))
 }
 
-func calcRates(original string, target string) float64 {
-	originalByUSD := ratesByUSD[original]
-	targetByUSD := ratesByUSD[target]
+func calcRates(original string, target string, rates Rate) float64 {
+	originalByUSD := rates[original]
+	targetByUSD := rates[target]
 	return targetByUSD / originalByUSD
 }
