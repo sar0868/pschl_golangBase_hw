@@ -1,4 +1,4 @@
-package binscheme
+package bins
 
 import "time"
 

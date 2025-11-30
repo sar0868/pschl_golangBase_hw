@@ -1,4 +1,4 @@
-package binscheme
+package bins
 
 type BinList struct {
 	Bins []Bin
