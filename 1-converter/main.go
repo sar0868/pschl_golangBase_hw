@@ -9,11 +9,14 @@ import (
 
 var currencies = []string{"USD", "EUR", "RUB"}
 
-const USD_EUR = 0.86
-const USD_RUB = 81.0132
-const EUR_RUB = USD_RUB / USD_EUR
+type Rate map[string]float64
 
 func main() {
+	var ratesByUSD = Rate{
+		"USD": 1,
+		"EUR": 0.86,
+		"RUB": 81.0132,
+	}
 
 	fmt.Println("Конвертор валют.")
 	for {
@@ -57,30 +60,13 @@ func main() {
 			}
 			break
 		}
-		CurrencyСalculation(count, original, target)
+		CurrencyСalculation(count, original, target, &ratesByUSD)
 		break
 	}
 }
 
-func CurrencyСalculation(count float64, currOriginal string, currTarget string) {
-	var result float64
-	if currOriginal == "USD" {
-		if currTarget == "EUR" {
-			result = USD_EUR
-		} else {
-			result = USD_RUB
-		}
-	} else if currOriginal == "EUR" {
-		if currTarget == "USD" {
-			result = 1 / USD_EUR
-		} else {
-			result = EUR_RUB
-		}
-	} else if currTarget == "USD" {
-		result = 1 / USD_RUB
-	} else {
-		result = 1 / EUR_RUB
-	}
+func CurrencyСalculation(count float64, currOriginal string, currTarget string, rates *Rate) {
+	result := calcRates(currOriginal, currTarget, *rates)
 	fmt.Printf("%.2f\n", result*count)
 }
 
@@ -113,4 +99,10 @@ func getCurrencyForExchange(original string) string {
 		tempSlice = append(tempSlice, el)
 	}
 	return fmt.Sprint(strings.Join(tempSlice, ", "))
+}
+
+func calcRates(original string, target string, rates Rate) float64 {
+	originalByUSD := rates[original]
+	targetByUSD := rates[target]
+	return targetByUSD / originalByUSD
 }
