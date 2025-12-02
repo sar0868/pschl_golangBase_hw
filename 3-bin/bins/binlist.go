@@ -1,7 +1,7 @@
 package bins
 
 type BinList struct {
-	Bins []Bin
+	Bins []Bin `json:"bins"`
 }
 
 func NewBinList() *BinList {
