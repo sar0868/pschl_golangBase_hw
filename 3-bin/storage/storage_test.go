@@ -10,7 +10,7 @@ import (
 	"github.com/go-playground/assert/v2"
 )
 
-var expectedJson string = "{\"Bins\":[{\"id\":\"1\",\"private\":true,\"createdAt\":\"2025-12-01T12:00:00Z\",\"name\":\"bin1\"},{\"id\":\"2\",\"private\":false,\"createdAt\":\"2025-12-01T12:00:00Z\",\"name\":\"bin2\"}]}"
+var expectedJson string = "{\"bins\":[{\"id\":\"1\",\"private\":true,\"createdAt\":\"2025-12-01T12:00:00Z\",\"name\":\"bin1\"},{\"id\":\"2\",\"private\":false,\"createdAt\":\"2025-12-01T12:00:00Z\",\"name\":\"bin2\"}]}"
 
 func TestSaveBinToJson(t *testing.T) {
 	name := "save data in file"
