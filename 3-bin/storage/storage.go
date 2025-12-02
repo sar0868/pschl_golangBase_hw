@@ -8,8 +8,8 @@ import (
 	"os"
 )
 
-func SaveBinToJson(bin bins.Bin, path string) error {
-	data, err := json.Marshal(bin)
+func SaveBinToJson(bins bins.BinList, path string) error {
+	data, err := json.Marshal(bins)
 	if err != nil {
 		return errors.New(err.Error())
 	}
