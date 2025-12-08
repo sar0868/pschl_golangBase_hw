@@ -28,6 +28,14 @@ func checkTypeFile(filename string) bool {
 	return true
 }
 
-// func Write(data []byte, path string) {
-
-// }
+func Write(data []byte, path string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	defer file.Close()
+	if _, err := file.Write(data); err != nil {
+		return errors.New("error write data")
+	}
+	return nil
+}

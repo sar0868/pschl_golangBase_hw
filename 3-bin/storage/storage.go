@@ -5,34 +5,44 @@ import (
 	"binjson/files"
 	"encoding/json"
 	"errors"
-	"os"
 )
 
-func SaveBinToJson(bins bins.BinList, path string) error {
+type StorageJson struct {
+	filename string
+}
+
+// GetBinsList implements bins.Storage.
+func (jsonStorage *StorageJson) GetBinsList() (*bins.BinList, error) {
+	panic("unimplemented")
+}
+
+func NewStorageJson(filename string) *StorageJson {
+	return &StorageJson{
+		filename: filename,
+	}
+}
+
+func (jsonStorage *StorageJson) SaveBinsList(bins bins.BinList) error {
 	data, err := json.Marshal(bins)
 	if err != nil {
 		return errors.New(err.Error())
 	}
-	file, err := os.Create(path)
+	err = files.Write(data, jsonStorage.filename)
 	if err != nil {
 		return errors.New(err.Error())
-	}
-	defer file.Close()
-	if _, err := file.Write(data); err != nil {
-		return errors.New("error write data")
 	}
 	return nil
 }
 
-func GetBinListToJson(path string) (*bins.BinList, error) {
-	data, err := files.Read(path)
+func (jsonStorage *StorageJson) GetBinList() (*bins.BinList, error) {
+	data, err := files.Read(jsonStorage.filename)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	binList := bins.NewBinList()
+	binList := bins.NewBinList(NewStorageJson(jsonStorage.filename))
 	err = json.Unmarshal(data, binList)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return binList, nil
+	return &binList.BinList, nil
 }

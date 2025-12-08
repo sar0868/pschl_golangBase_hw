@@ -2,19 +2,20 @@ package main
 
 import (
 	"binjson/bins"
+	"binjson/storage"
 	"fmt"
 )
 
 // Меню - создать бин, найти бины по id-private-name, посмотреть все бины, выход
 
-var menu = map[string]func(*bins.BinList){
+var menu = map[string]func(*bins.BinListWithStorage){
 	"1": addBin,
 	"2": findBins,
 	"3": printBins,
 }
 
 func main() {
-	bins := bins.NewBinList()
+	bins := bins.NewBinList(storage.NewStorageJson("data.json"))
 
 	fmt.Println("Bins")
 Menu:
@@ -44,6 +45,7 @@ Menu:
 }
 
 func promptData(prompt ...string) string {
+	//ввод строки
 	for i, el := range prompt {
 		if i == len(prompt)-1 {
 			fmt.Printf("%v: ", el)
@@ -56,7 +58,7 @@ func promptData(prompt ...string) string {
 	return result
 }
 
-func addBin(binsList *bins.BinList) {
+func addBin(binsList *bins.BinListWithStorage) {
 	id := promptData("input id")
 	inpPrivate := promptData("input private (1-true, 2 - false)")
 	var private bool
@@ -70,9 +72,9 @@ func addBin(binsList *bins.BinList) {
 	binsList.Bins = append(binsList.Bins, *newBin)
 }
 
-func findBins(binList *bins.BinList) {}
+func findBins(binList *bins.BinListWithStorage) {}
 
-func printBins(binList *bins.BinList) {
+func printBins(binList *bins.BinListWithStorage) {
 	for ind, bin := range binList.Bins {
 		fmt.Println(ind, bin)
 	}
