@@ -27,3 +27,7 @@ func checkTypeFile(filename string) bool {
 	}
 	return true
 }
+
+// func Write(data []byte, path string) {
+
+// }

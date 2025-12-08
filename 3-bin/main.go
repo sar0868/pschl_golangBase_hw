@@ -51,13 +51,29 @@ func promptData(prompt ...string) string {
 			fmt.Println(el)
 		}
 	}
-	var choice string
-	fmt.Scan(&choice)
-	return choice
+	var result string
+	fmt.Scan(&result)
+	return result
 }
 
-func addBin(bins *bins.BinList) {}
+func addBin(binsList *bins.BinList) {
+	id := promptData("input id")
+	inpPrivate := promptData("input private (1-true, 2 - false)")
+	var private bool
+	if inpPrivate == "1" {
+		private = true
+	} else {
+		private = false
+	}
+	name := promptData("input name")
+	newBin := bins.NewBin(id, private, name)
+	binsList.Bins = append(binsList.Bins, *newBin)
+}
 
-func findBins(bins *bins.BinList) {}
+func findBins(binList *bins.BinList) {}
 
-func printBins(bins *bins.BinList) {}
+func printBins(binList *bins.BinList) {
+	for ind, bin := range binList.Bins {
+		fmt.Println(ind, bin)
+	}
+}
