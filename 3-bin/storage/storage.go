@@ -36,10 +36,10 @@ func (jsonStorage *StorageJson) GetBinsList() (*bins.BinList, error) {
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	binList := bins.NewBinList(NewStorageJson(jsonStorage.filename))
-	err = json.Unmarshal(data, binList)
+	var binList bins.BinList
+	err = json.Unmarshal(data, &binList)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &binList.BinList, nil
+	return &binList, nil
 }
