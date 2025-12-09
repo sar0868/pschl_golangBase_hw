@@ -12,9 +12,6 @@ type StorageJson struct {
 }
 
 // GetBinsList implements bins.Storage.
-func (jsonStorage *StorageJson) GetBinsList() (*bins.BinList, error) {
-	panic("unimplemented")
-}
 
 func NewStorageJson(filename string) *StorageJson {
 	return &StorageJson{
@@ -34,7 +31,7 @@ func (jsonStorage *StorageJson) SaveBinsList(bins bins.BinList) error {
 	return nil
 }
 
-func (jsonStorage *StorageJson) GetBinList() (*bins.BinList, error) {
+func (jsonStorage *StorageJson) GetBinsList() (*bins.BinList, error) {
 	data, err := files.Read(jsonStorage.filename)
 	if err != nil {
 		return nil, errors.New(err.Error())

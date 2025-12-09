@@ -56,7 +56,7 @@ func TestSaveBinsList(t *testing.T) {
 	})
 }
 
-func TestGetBinListToJson(t *testing.T) {
+func TestGetBinsListToJson(t *testing.T) {
 	name := "positive test"
 	path := "expected.json"
 	want := bins.BinList{
@@ -83,10 +83,9 @@ func TestGetBinListToJson(t *testing.T) {
 	}
 
 	t.Run(name, func(t *testing.T) {
-		jsonStorage := StorageJson{
-			filename: path,
-		}
-		got, gotErr := jsonStorage.GetBinList()
+		jsonStorage := NewStorageJson(path)
+
+		got, gotErr := jsonStorage.GetBinsList()
 		if gotErr != nil {
 			if !wantErr {
 				t.Errorf("GetBinListToJson() failed: %v", gotErr)
