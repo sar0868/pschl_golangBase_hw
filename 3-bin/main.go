@@ -31,8 +31,9 @@ func main() {
 	fmt.Println("Bins")
 Menu:
 	for {
+		fmt.Println("\nMenu:")
 		choice := promptData(
-			"\n1: add bin",
+			"1: add bin",
 			"2: find bins",
 			"3: print bins",
 			"4: delete bins by ID",
@@ -61,29 +62,33 @@ func promptData(prompt ...string) string {
 }
 
 func addBin(binsList *bins.BinListWithStorage) {
-	id := promptData("input id")
-	inpPrivate := promptData("input private (1-true, 2 - false)")
-	var private bool
-	if inpPrivate == "1" {
-		private = true
-	} else {
-		private = false
-	}
-	var name string
 	for {
-		fmt.Println("input name (after you finish entering your name, press Enter)")
-		scanner := bufio.NewScanner(os.Stdin)
-		if scanner.Scan() {
-			name = scanner.Text()
-			name = strings.TrimSpace(name)
+		id := promptData("input id")
+		inpPrivate := promptData("input private (1-true, 2 - false)")
+		var private bool
+		if inpPrivate == "1" {
+			private = true
+		} else {
+			private = false
 		}
-		if name != "" {
-			break
+		var name string
+		for {
+			fmt.Println("input name (after you finish entering your name, press Enter)")
+			scanner := bufio.NewScanner(os.Stdin)
+			if scanner.Scan() {
+				name = scanner.Text()
+				name = strings.TrimSpace(name)
+			}
+			if name != "" {
+				break
+			}
+		}
+		newBin := bins.NewBin(id, private, name)
+		if binsList.AddBin(*newBin) {
+			return
 		}
 	}
 
-	newBin := bins.NewBin(id, private, name)
-	binsList.AddBin(*newBin)
 }
 
 func findBins(binsList *bins.BinListWithStorage) {
@@ -124,7 +129,7 @@ func findPrivate(binsList *bins.BinListWithStorage) {
 		return bin.Private == res
 	})
 	if !ok {
-		fmt.Printf("Don't found bin for private: %v", parameter)
+		fmt.Printf("Don't found bin for private: %v\n", parameter)
 	}
 	findBins := bins.BinListWithStorage{
 		BinList: bins.BinList{
@@ -140,7 +145,7 @@ func findName(binsList *bins.BinListWithStorage) {
 		return strings.Contains(bin.Name, str)
 	})
 	if !ok {
-		fmt.Printf("Don't found bin for name: %v", parameter)
+		fmt.Printf("Don't found bin for name: %v\n", parameter)
 	}
 	findBins := bins.BinListWithStorage{
 		BinList: bins.BinList{
@@ -151,7 +156,16 @@ func findName(binsList *bins.BinListWithStorage) {
 }
 
 func deleteBinById(binsList *bins.BinListWithStorage) {
-	//
+	id := promptData("specify id")
+	if !binsList.ContainsID(id) {
+		fmt.Printf("Bins list does not contain bin with id=%v\n", id)
+		return
+	}
+	if binsList.DeleteBins(id) {
+		fmt.Printf("Delete bin with id=%v success\n", id)
+	} else {
+		fmt.Printf("Delete bin with id=%v failed\n", id)
+	}
 }
 
 func printBins(binsList *bins.BinListWithStorage) {

@@ -1,6 +1,10 @@
 package bins
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+	"strings"
+)
 
 type Storage interface {
 	SaveBinsList(BinList) error
@@ -13,6 +17,20 @@ type BinList struct {
 type BinListWithStorage struct {
 	BinList
 	storage Storage
+}
+
+func (bins *BinListWithStorage) DeleteBins(id string) bool {
+	temp := len(bins.Bins)
+	bins.Bins = slices.DeleteFunc(bins.Bins, func(bin Bin) bool {
+		return strings.Contains(bin.Id, id)
+	})
+	if temp > len(bins.Bins) {
+		if err := bins.save(); err != nil {
+			fmt.Println(err)
+		}
+		return true
+	}
+	return false
 }
 
 func (bins *BinListWithStorage) FindBins(parameter string, checker func(bin Bin, str string) bool) ([]Bin, bool) {
@@ -42,12 +60,17 @@ func NewBinList(storage Storage) *BinListWithStorage {
 	return binsList
 }
 
-func (bins *BinListWithStorage) AddBin(bin Bin) {
+func (bins *BinListWithStorage) AddBin(bin Bin) bool {
+	if bins.ContainsID(bin.Id) {
+		fmt.Printf("Bin with id=%v already exists\n", bin.Id)
+		return false
+	}
 	bins.Bins = append(bins.Bins, bin)
 	err := bins.save()
 	if err != nil {
 		fmt.Println(err)
 	}
+	return true
 }
 
 func (bins *BinListWithStorage) save() error {
@@ -56,4 +79,11 @@ func (bins *BinListWithStorage) save() error {
 		return fmt.Errorf("error save bin list: %w", err)
 	}
 	return nil
+}
+
+func (bins *BinListWithStorage) ContainsID(id string) bool {
+	_, ok := bins.FindBins(id, func(bin Bin, str string) bool {
+		return bin.Id == str
+	})
+	return ok
 }
