@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"binjson/api"
 	"binjson/bins"
@@ -16,7 +17,10 @@ var menu = map[string]func(*bins.BinListWithStorage){
 }
 
 func main() {
-	binsList := bins.NewBinList(storage.NewStorageJson("data.json"))
+	binsList, err := bins.NewBinList(storage.NewStorageJson("data.json"))
+	if err != nil {
+		log.Fatalf("failed initialize bins list: %v", err)
+	}
 
 	fmt.Println("Bins")
 Menu:

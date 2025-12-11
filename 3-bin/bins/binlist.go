@@ -43,7 +43,7 @@ func (bins *BinListWithStorage) FindBins(parameter string, checker func(bin Bin,
 	return result, len(result) != 0
 }
 
-func NewBinList(storage Storage) *BinListWithStorage {
+func NewBinList(storage Storage) (*BinListWithStorage, error) {
 	binsList := &BinListWithStorage{
 		BinList: BinList{},
 		storage: storage,
@@ -51,13 +51,10 @@ func NewBinList(storage Storage) *BinListWithStorage {
 	list, err := storage.GetBinsList()
 	if err != nil {
 		fmt.Printf("error get bins list: %v", err)
-		return &BinListWithStorage{
-			BinList: BinList{},
-			storage: storage,
-		}
+		return nil, fmt.Errorf("error: %w", err)
 	}
 	binsList.BinList = *list
-	return binsList
+	return binsList, nil
 }
 
 func (bins *BinListWithStorage) AddBin(bin Bin) bool {
