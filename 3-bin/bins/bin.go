@@ -1,6 +1,9 @@
 package bins
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Bin struct {
 	Id        string    `json:"id"`
@@ -16,4 +19,8 @@ func NewBin(id string, private bool, name string) *Bin {
 		CreatedAt: time.Now(),
 		Name:      name,
 	}
+}
+
+func (bin *Bin) ToString() string {
+	return fmt.Sprintf("id: %s\nprivate: %t\nname: %s", bin.Id, bin.Private, bin.Name)
 }
