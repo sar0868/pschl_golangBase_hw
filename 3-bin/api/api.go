@@ -2,6 +2,7 @@ package api
 
 import (
 	"binjson/bins"
+	"binjson/config"
 	"bufio"
 	"fmt"
 	"os"
@@ -9,10 +10,20 @@ import (
 	"strings"
 )
 
+var Config config.Config
+
 var option = map[string]func(*bins.BinListWithStorage){
 	"1": FindId,
 	"2": FindPrivate,
 	"3": FindName,
+}
+
+func GetKey() {
+	Config, err := config.Init()
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println(Config)
 }
 
 func PromptData(prompt ...string) string {

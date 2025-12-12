@@ -17,6 +17,7 @@ var menu = map[string]func(*bins.BinListWithStorage){
 }
 
 func main() {
+	api.GetKey()
 	binsList, err := bins.NewBinList(storage.NewStorageJson("data.json"))
 	if err != nil {
 		log.Fatalf("failed initialize bins list: %v", err)
