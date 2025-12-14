@@ -12,7 +12,7 @@ import (
 
 var expectedJson string = "{\"bins\":[{\"id\":\"1\",\"private\":true,\"createdAt\":\"2025-12-01T12:00:00Z\",\"name\":\"bin1\"},{\"id\":\"2\",\"private\":false,\"createdAt\":\"2025-12-01T12:00:00Z\",\"name\":\"bin2\"}]}"
 
-func TestSaveBinToJson(t *testing.T) {
+func TestSaveBinsList(t *testing.T) {
 	name := "save data in file"
 
 	bins := bins.BinList{
@@ -36,7 +36,10 @@ func TestSaveBinToJson(t *testing.T) {
 	wantErr := false
 
 	t.Run(name, func(t *testing.T) {
-		gotErr := SaveBinToJson(bins, path)
+		var jsonStorage = StorageJson{
+			filename: path,
+		}
+		gotErr := jsonStorage.SaveBinsList(bins)
 		assert.Equal(t, wantErr, gotErr != nil)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			t.Errorf("file %v don't create", path)
@@ -53,7 +56,7 @@ func TestSaveBinToJson(t *testing.T) {
 	})
 }
 
-func TestGetBinListToJson(t *testing.T) {
+func TestGetBinsListToJson(t *testing.T) {
 	name := "positive test"
 	path := "expected.json"
 	want := bins.BinList{
@@ -80,7 +83,9 @@ func TestGetBinListToJson(t *testing.T) {
 	}
 
 	t.Run(name, func(t *testing.T) {
-		got, gotErr := GetBinListToJson(path)
+		jsonStorage := NewStorageJson(path)
+
+		got, gotErr := jsonStorage.GetBinsList()
 		if gotErr != nil {
 			if !wantErr {
 				t.Errorf("GetBinListToJson() failed: %v", gotErr)

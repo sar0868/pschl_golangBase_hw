@@ -4,15 +4,21 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"slices"
 	"sort"
 	"strconv"
 	"strings"
 )
 
+type Handler func([]float64) float64
+
+var operations = map[string]Handler{
+	"SUM": sum,
+	"AVG": avg,
+	"MED": med,
+}
+
 func main() {
 	fmt.Println("Калькулятор")
-	commands := []string{"AVG", "SUM", "MED"}
 Menu:
 	for {
 		menu()
@@ -22,19 +28,18 @@ Menu:
 			fmt.Println(err)
 			continue
 		}
-		if inputUser == "0" {
+		funOperation, ok := operations[inputUser]
+		if !ok {
 			break Menu
 		}
-		if !slices.Contains(commands, inputUser) {
-			fmt.Printf("Нет такого выбора: %v\n", inputUser)
-			continue
-		}
+
 		array, err := inputData()
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-		operation(inputUser, array)
+		result := funOperation(array)
+		fmt.Printf("%.2f\n", result)
 	}
 }
 
@@ -48,7 +53,7 @@ func menu() {
 
 func inputData() ([]float64, error) {
 	result := []float64{}
-
+	fmt.Println("Введите числа через запятую")
 	reader := bufio.NewReader(os.Stdin)
 
 	arrInput, err := reader.ReadString('\n')
@@ -66,17 +71,6 @@ func inputData() ([]float64, error) {
 		result = append(result, num)
 	}
 	return result, nil
-}
-
-func operation(command string, arr []float64) {
-	switch command {
-	case "SUM":
-		fmt.Printf("%.2f\n", sum(arr))
-	case "AVG":
-		fmt.Printf("%.2f\n", avg(arr))
-	case "MED":
-		fmt.Printf("%.2f\n", med(arr))
-	}
 }
 
 func sum(arr []float64) float64 {
