@@ -19,11 +19,11 @@ var option = map[string]func(*bins.BinListWithStorage){
 }
 
 func GetKey() {
-	Config, err := config.Init()
+	config, err := config.Init()
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Println(Config)
+	Config = *config
 }
 
 func PromptData(prompt ...string) string {
