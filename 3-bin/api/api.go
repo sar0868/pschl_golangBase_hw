@@ -5,6 +5,8 @@ import (
 	"binjson/config"
 	"bufio"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -151,4 +153,32 @@ func PrintBins(binsList *bins.BinListWithStorage) {
 		fmt.Println("====")
 		fmt.Println(bin.ToString())
 	}
+}
+
+func GetBin(path string) int {
+	// GetKey()
+	req, err := http.NewRequest("GET", path, nil)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+	fmt.Println(Config.Key)
+	req.Header.Set("X-Master-Key", Config.Key)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	defer resp.Body.Close()
+	// fmt.Println(resp.Status)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	fmt.Println(body)
+	return resp.StatusCode
 }

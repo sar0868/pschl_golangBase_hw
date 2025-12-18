@@ -1,3 +1,4 @@
 .vscode/launch.json
 *.json
 3-bin/.env
+3-bin/api/.env
